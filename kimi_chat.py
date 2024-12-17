@@ -77,7 +77,7 @@ class KimiChat(Plugin):
             
             # 创建存储目录结构
             self.temp_dir = os.path.join(self.storage_dir, 'temp')  # 临时文件目录
-            self.video_dir = os.path.join(self.storage_dir, 'video')  # ��频处理目录
+            self.video_dir = os.path.join(self.storage_dir, 'video')  # 视频处理目录
             self.frames_dir = os.path.join(self.video_dir, 'frames')  # 视频帧目录
             
             # 创建所需目录
@@ -108,7 +108,7 @@ class KimiChat(Plugin):
             if not tokens['access_token']:
                 refresh_access_token()
             
-            # 基础设��
+            # 基础设置
             self.keyword = self.conf["keyword"]
             self.reset_keyword = self.conf["reset_keyword"] 
             
@@ -294,7 +294,7 @@ class KimiChat(Plugin):
                 if title:
                     formatted_content += f"【标题】{title}\n\n"
                 
-                # 如��有自义提示词，显示提示词
+                # 如果有自义提示词，显示提示词
                 if custom_prompt and self.show_custom_prompt:
                     formatted_content += f"【提示词】{custom_prompt}\n\n"
                 
@@ -320,7 +320,7 @@ class KimiChat(Plugin):
             return True
 
     def on_handle_context(self, e_context: EventContext):
-        """处理消息上下文"""
+        """处理消���上下文"""
         if not e_context['context'].content:
             return
 
@@ -482,7 +482,7 @@ class KimiChat(Plugin):
         return text.strip()
 
     def handle_files(self, file_list, user_id, e_context):
-        """处理多文件上传"""
+        """处理多文��上传"""
         try:
             chat_id = create_new_chat_session()
             file_ids = []
@@ -553,7 +553,7 @@ class KimiChat(Plugin):
             return True
 
     def prepare_file(self, msg):
-        """准备文件，确保载完成"""
+        """准备文���，确保载完成"""
         try:
             # 确保文已下载
             if hasattr(msg, '_prepare_fn') and not msg._prepared:
@@ -687,7 +687,7 @@ class KimiChat(Plugin):
                 logger.error(f"[KimiChat] 用户 {user_id} 有待处理的文件")
                 return False
             
-            # 获���自定义提示词文件列表
+            # 获自定义提示词文件列表
             metadata = files[0]  # 第一个元素是元据
             custom_prompt = metadata.get("custom_prompt")
             file_list = files[1:]  # 其他元素是文件息
@@ -928,7 +928,7 @@ class KimiChat(Plugin):
             
         logger.info(f"[KimiChat] 用户 {real_user_id} 触发文件处理, 触发词: {trigger}")
         
-        # 检查是否是视频触发词
+        # 检查是否���视频触发词
         video_triggers = self.conf.get("video_config", {}).get("trigger_keywords", [])
         if trigger in video_triggers:
             # 提取视频触发词后面的内容
@@ -948,7 +948,7 @@ class KimiChat(Plugin):
             else:
                 # 如果没有链接，则视为自定义提示词
                 custom_prompt = remaining if remaining else None
-                # 设置等待视频状态，包含��定义提示词
+                # 设置等待视频状态，包含定义提示词
                 self.waiting_video_links[waiting_id] = {
                     'trigger_time': time.time(),
                     'timeout': self.conf.get("file_timeout", 300),
@@ -1015,7 +1015,7 @@ class KimiChat(Plugin):
         self.waiting_files[waiting_id] = waiting_info
         logger.debug(f"[KimiChat] 设置等待状态: waiting_id={waiting_id}, info={waiting_info}")
         
-        # 根据文件���型返回对应提示文本
+        # 根据文件型返回对应提示文本
         if file_type == 'video':
             reply_text = "请发送需要识别的视频"
         else:
@@ -1199,7 +1199,7 @@ class KimiChat(Plugin):
                         os.remove(path)
                         logger.debug(f"[KimiChat] 已删除文件: {path}")
             else:
-                # 清理所有临时文��
+                # 清理所有临时文
                 for root, _, files in os.walk(self.storage_dir):
                     for file in files:
                         try:
@@ -1513,7 +1513,7 @@ class KimiChat(Plugin):
             response = requests.get(video_url, stream=True)
             response.raise_for_status()
             
-            # 获取文件大小
+            # 获取文��大小
             file_size = int(response.headers.get('content-length', 0))
             
             # 检查文件大小限制
@@ -1577,7 +1577,7 @@ class KimiChat(Plugin):
             manager = VideoFrameManager(output_dir=self.frames_dir)
             frames = manager.extract_frames(video_path, self.max_frames)
             if not frames:
-                reply = Reply(ReplyType.TEXT, "视频帧提取失败,请稍后重试")
+                reply = Reply(ReplyType.TEXT, "视频帧提取失败,���稍后重试")
                 e_context["channel"].send(reply, e_context["context"])
                 e_context.action = EventAction.BREAK_PASS
                 return True
@@ -1632,7 +1632,7 @@ class KimiChat(Plugin):
             e_context.action = EventAction.BREAK_PASS
             return True
         finally:
-            # 清理临时文��
+            # 清理临时文件
             try:
                 if 'frames' in locals() and frames:
                     self.clean_temp_files([f[0] for f in frames])
