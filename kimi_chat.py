@@ -77,7 +77,7 @@ class KimiChat(Plugin):
             
             # 创建存储目录结构
             self.temp_dir = os.path.join(self.storage_dir, 'temp')  # 临时文件目录
-            self.video_dir = os.path.join(self.storage_dir, 'video')  # ��频处理目录
+            self.video_dir = os.path.join(self.storage_dir, 'video')  # 视频处理目录
             self.frames_dir = os.path.join(self.video_dir, 'frames')  # 视频帧目录
             
             # 创建所需目录
@@ -108,7 +108,7 @@ class KimiChat(Plugin):
             if not tokens['access_token']:
                 refresh_access_token()
             
-            # 基础设��
+            # 基础设置
             self.keyword = self.conf["keyword"]
             self.reset_keyword = self.conf["reset_keyword"] 
             
@@ -779,7 +779,7 @@ class KimiChat(Plugin):
                 return True
                 
             # 收到所有文件后，发送处理提示
-            process_reply = Reply(ReplyType.TEXT, "���件接收完毕，正在解析处理中...")
+            process_reply = Reply(ReplyType.TEXT, "文件接收完毕，正在解析处理中...")
             e_context["channel"].send(process_reply, e_context["context"])
             
             logger.info(f"[KimiChat] 开始处理 {expected_count} 个文件")
@@ -1362,7 +1362,7 @@ class KimiChat(Plugin):
                     'use_search': True
                 }
 
-            # 下载��处理视频
+            # 下载处理视频
             if video_url and not video_path:
                 video_path = self.download_video(video_url)
             
