@@ -1,0 +1,55 @@
+{
+    "refresh_token": "自己抓取refresh_token",
+    "keyword": "k",
+    "reset_keyword": "kimi重置会话",
+    "group_names": ["群聊1"],
+    "allowed_groups": [],
+    "auto_summary": true,
+    
+    "summary_prompt": "你是一个新闻专家，我会给你发一些网页内容，请你用简单明了的语言做总结。格式如下：📌总结\n一句话讲清楚整篇文章的核心观点，控制在30字左右。\n\n💡要点\n用数字序号列出来3-5个文章的核心内容，尽量使用emoji让你的表达更生动",
+    "exclude_urls": [
+        "support.weixin.qq.com",
+        "finder.video.qq.com"
+    ],
+    "file_upload": true,
+    "file_triggers": [ "k识别", "识别"],
+    "file_parsing_prompts": "请帮我整理汇总文件的核心内容",
+    "image_prompts": "请描述这些图片的内容",
+    "use_system_prompt": true,
+    "show_custom_prompt": false,
+    "max_file_size": 50,
+    "file_timeout": 300,
+    "supported_file_formats": [
+        ".dot", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".ppa", ".pptx",
+        ".md", ".pdf", ".txt", ".csv",
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+        ".py", ".java", ".cpp", ".c", ".h", ".hpp", ".js", ".ts", ".html", ".css",
+        ".json", ".xml", ".yaml", ".yml", ".sh", ".bat",
+        ".log", ".ini", ".conf", ".properties"
+    ],
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "format": "[KimiChat] %(message)s",
+        "show_init_info": true,
+        "show_file_process": true,
+        "show_chat_process": false
+    },
+    "private_auto_summary": false,
+    "video_config": {
+        "trigger_keywords": ["视频", "视频分析"],
+        "save_dir": "video",
+        "frame_interval": 1.0,
+        "max_frames": 50,
+        "upload_threads": 10,
+        "max_size": 200,
+        "summary_prompt": "你现在的角色是视觉分析视频内容总结助手，任务是根据视频帧截图和音频转文字内容，总结视频的主要内容。请按照以下格式输出：\n\n# 内容摘要\n[总结视频主要内容，并结合音频文字中的重点进行拓展和解读，不少于150字]\n\n# 视频画面\n[根据视频帧信息，连贯描述视频画面内容，注意与音频内容相结合。]\n\n# 关键信息\n[从音频文字中提取关键信息，每条信息以数字编号，并进行分类，每条不超过20字。]\n\n# 音频内容\n[音频内容转文字可能会因为不连贯，语速过快过慢和发音不准确多音字等因素，导致识别出现错别字和缺漏，你充当文本校对员，结合视频帧可能出现的画面文字信息和全文语义表达内容，再根据上下文内容把不连贯错别字部分修正输出校对后完整的音频文字，如果文本内容太长了适当总结概括重点在200字以内]\n\n请注意，音频文字内容可能是清晰连贯的，也可能是杂乱无章的，请根据实际情况进行总结。返回的内容可以适当插入与画面相关的emoji表情，使总结更生动。",
+        "supported_formats": [".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv"]
+    },
+    "audio_token": "硅基流动API自己替换",
+    "video_domains": [
+        "douyin.com",
+        "kuaishou.com", 
+        "weibo.com/tv"
+    ]
+}
