@@ -28,9 +28,10 @@ HEADERS = {
 
 # 创建新会话的函数
 @ensure_access_token
-def create_new_chat_session():
+def create_new_chat_session(kimiplus_id=None):
     """
     发送POST请求以创建新的聊天会话。
+    :param kimiplus_id: 可选的 kimiplus_id 参数，用于指定使用的模型
     :return: 如果请求成功，返回会话ID(str)；如果失败，抛出异常。
     """
     # 从全局tokens变量中获取access_token
@@ -40,11 +41,15 @@ def create_new_chat_session():
     headers = HEADERS.copy()
     headers['Authorization'] = f'Bearer {auth_token}'
 
-    # 定义请求的载��
+    # 定义请求的载荷
     payload = {
         "name": "未命名会话",
         "is_example": False
     }
+    
+    # 如果指定了 kimiplus_id，添加到载荷中
+    if kimiplus_id:
+        payload["kimiplus_id"] = kimiplus_id
 
     # 发送POST请求
     response = requests.post('https://kimi.moonshot.cn/api/chat', json=payload, headers=headers)
@@ -74,6 +79,8 @@ def stream_chat_responses(
     chat_id: str, 
     content: str,
     refs: Optional[Union[str, List[str]]] = None,
+    new_chat: bool = False,
+    kimiplus_id: Optional[str] = None,
     **kwargs
 ) -> str:
     """发送消息并获取流式响应"""
@@ -88,9 +95,9 @@ def stream_chat_responses(
             }],
             "use_search": True,  # 默认开启联网
             "extend": {
-                "sidebar": False,  # 开启侧边栏
+                "sidebar": True,  # 开启侧边栏
             },
-            "kimiplus_id": "kimi",  # 使用kimi模型
+            "kimiplus_id": kimiplus_id or "kimi",  # 使用指定的模型或默认的kimi模型
             "use_research": False,  # 不使用研究模式
             "use_math": False,  # 不使用数学模式
             "refs": [],  # 空引用列表
