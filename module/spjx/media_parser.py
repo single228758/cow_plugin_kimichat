@@ -175,7 +175,7 @@ class MediaParser:
         return None
 
     def _parse_api2_response(self, response):
-        """解析第二个API的响应"""
+        """解析第二个API的���应"""
         try:
             data = response.json()
             if "msg" in data and data["msg"] == "解析成功！💬️":
@@ -283,3 +283,66 @@ class MediaParser:
                     logger.error("[MediaParser] 请求多次失败,放弃重试")
                     return None
                 time.sleep(0.5)  # 减少重试等待时间
+
+    def create_short_url(self, long_url):
+        """使用 urlc.cn 生成短链接
+        Args:
+            long_url: 原始长链接
+        Returns:
+            str: 生成的短链接，失败则返回原始链接
+        """
+        try:
+            import requests
+            import json
+            from datetime import datetime, timedelta
+            import urllib3
+            urllib3.disable_warnings()  # 禁用SSL警告
+            
+            # 确保URL格式正确
+            if not long_url.startswith(('http://', 'https://')):
+                long_url = 'http://' + long_url
+            
+            # API配置
+            api_url = "https://www.urlc.cn/api/url/add"
+            headers = {
+                'Authorization': 'xjq12GUGBabIPyN0kOti',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            
+            # 构建请求数据
+            payload = {
+                'url': long_url,
+                'domain': 'https://awws.asia',  # 使用推荐的域名
+                'expiry': (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')  # 30天有效期
+            }
+            
+            # 发送请求
+            response = requests.post(
+                api_url,
+                headers=headers,
+                json=payload,
+                verify=False,  # 禁用SSL验证
+                timeout=10
+            )
+            
+            # 检查HTTP状态码
+            if response.status_code != 200:
+                logger.error(f"[MediaParser] HTTP请求失败: {response.status_code}")
+                return long_url
+            
+            # 解析JSON响应
+            result = response.json()
+            if result.get('error') == 0 and 'short' in result:
+                short_url = result['short']
+                logger.info(f"[MediaParser] 成功生成短链接: {short_url}")
+                return short_url
+            else:
+                error_msg = result.get('msg', '未知错误')
+                logger.error(f"[MediaParser] API返回错误: {error_msg}")
+                return long_url
+                
+        except Exception as e:
+            logger.error(f"[MediaParser] 生成短链接失败: {e}")
+            return long_url
