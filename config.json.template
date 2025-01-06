@@ -1,0 +1,45 @@
+{
+    "refresh_token": "YOUR_REFRESH_TOKEN",
+    "keyword": "k",
+    "reset_keyword": "kimi重置会话",
+    "toggle_search_keyword": "kimi切换联网",
+    "group_names": [],
+    "allowed_groups": [],
+    "auto_summary": true,
+    "private_auto_summary": false,
+    "summary_prompt": "你是一个新闻专家，我会给你发一些网页内容，请你用简单明了的语言做总结。格式如下：\n📌总结\n一句话讲清楚整篇文章的核心观点，控制在30字左右。\n\n💡要点\n用数字序号列出来3-5个文章的核心内容，尽量使用emoji让你的表达更生动",
+    "exclude_urls": [
+        "support.weixin.qq.com",
+        "finder.video.qq.com"
+    ],
+    "file_upload": true,
+    "max_file_size": 50,
+    "file_triggers": [
+        "k分析", "分析",
+        "k识别", "识别",
+        "k识图", "识图"
+    ],
+    "file_parsing_prompts": "请帮我整理汇总文件的核心内容",
+    "image_prompts": "请描述这张图片的内容",
+    "use_system_prompt": true,
+    "show_custom_prompt": false,
+    "supported_file_formats": [
+        ".dot", ".doc", ".docx", ".xls", ".xlsx",
+        ".ppt", ".ppa", ".pptx", ".pdf", ".txt",
+        ".md", ".csv",
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+        ".py", ".java", ".cpp", ".c", ".h", ".hpp",
+        ".js", ".ts", ".html", ".css",
+        ".json", ".xml", ".yaml", ".yml",
+        ".ini", ".conf", ".properties",
+        ".sh", ".bat", ".log"
+    ],
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "format": "[KimiChat] %(message)s",
+        "show_init_info": true,
+        "show_file_process": true,
+        "show_chat_process": false
+    }
+} 

@@ -1,156 +1,205 @@
-# KimiChat 插件说明
+# KimiChat Plugin
 
-基于[国产大模型Kimi](https://kimi.moonshot.cn/)开发的[chatgpt-on-wechat](https://github.com/zhayujie/chatgpt-on-wechat)插件，支持联网对话、多种格式文件解析、图片识别、视频分析等功能。
-插件基于 [cow_plugin_kimichat](https://github.com/LargeCupPanda/cow_plugin_kimichat) 修改，短视频链接处理基于[media_parser插件](https://github.com/5201213/media_parser)制作。
+chatgpt-on-wechat插件
 
-本插件代码全部由GPT生成，可能存在bug。欢迎通过Issue反馈问题或提出建议。
+基于 [cow_plugin_kimichat](https://github.com/LargeCupPanda/cow_plugin_kimichat) 修改，增加了图片识别和链接总结功能。
 
-音频转写API来自硅基流动，可通过[邀请链接](https://cloud.siliconflow.cn/i/tPQSNa6I)注册。
+## 功能特点
+
+- 多轮对话: 支持连续对话,上下文记忆
+- 双聊模式: 支持群聊共享/私聊独立会话
+- 文件解析: 支持多种格式文件的智能解析
+- 图片识别: 支持图片内容智能识别描述
+- 链接总结: 自动总结分享链接的核心内容
+- 联网搜索: 支持实时联网信息查询
+- 权限管理: 支持群组白名单管理
+
+验明身份和可以联网获取最新新闻
+![image](https://github.com/user-attachments/assets/84797615-d186-4eb4-8cd2-33612bd41404)
+
+识别图片
+<img width="929" alt="1733388517175" src="https://github.com/user-attachments/assets/8da1f7a5-e7fe-4366-9af0-acdafc53a841">
 
 
-## refresh_token位置
-![image](https://github.com/user-attachments/assets/32deed4d-89a0-48ca-9083-e64c264f72db)
 
+## 安装配置
 
-## 演示
+1. 下载插件到 plugins 目录
+或者管理模式#installp https://github.com/single228758/cow-.git
+           #scanp
+3. 复制 config.json.template 为 config.json
+4. 配置 refresh_token 和其他参数
+5. 重启程序生效
 
-![微信图片_20241217170034](https://github.com/user-attachments/assets/9ed3cc6e-0e22-4ffb-972a-131094a49a5b)
+## 配置详解
 
-![2](https://github.com/user-attachments/assets/55739be9-fee1-449e-aca3-805e51d6b736)
-
-
-## 🌟 主要功能
-
-- 💬 智能对话：支持联网搜索和多轮上下文对话，提供类似ChatGPT的对话体验
-- 📄 文件解析：支持多种格式文件的内容分析，包括文档、图片、视频、代码等
-- 🖼️ 图片识别：支持图片内容识别和描述，可提取图片中的文字、物体、场景等信息（新增视觉思考k1模型）
-- 🎥 视频分析：支持视频内容理解和自动总结，可提取视频中的关键信息和精华片段
-- 🔗 链接总结：自动提取和总结分享链接的内容，方便快速了解链接要点
-- 👥 场景支持：支持群聊和私聊两种场景，可根据不同场景提供个性化服务
-- ✨ 自定义提示词：支持个性化配置提示词，可根据需求定制对话风格和任务
-
-## 📦 快速安装
-
-1. 替换`channel`目录下的文件：
-   - 将`wechat_channel.py`和`wechat_message.py`两个文件复制到`chatgpt-on-wechat\channel\wechat`目录下，覆盖原有文件
-   - 修改后的文件增加了对视频文件的接收和处理功能
-
-2. 使用管理员权限安装插件：
-   ```bash
-   #installp https://github.com/single228758/cow_plugin_kimichat.git
-   ```
-
-3. 安装依赖：
-   ```bash
-   pip install requests moviepy pydub numpy
-   ```
-
-4. 配置插件：
-   ```bash 
-   cd plugins/cow_plugin_kimichat/
-   vim config.json  # 修改配置参数
-   ```
-
-5. 启用插件：
-   ```bash
-   #scanp
-   ```
-
-## ⚙️ 核心配置
-
-编辑 `config.json` 文件，必要配置项：
-
+### 核心配置
 ```json
 {
-    "refresh_token": "你的refresh_token",  // Kimi API令牌(必填)
-    "keyword": "k",                        // 触发关键词
-    "group_names": ["群名1", "群名2"],     // 启用自动总结的群名
-    "auto_summary": true,                  // 是否开启自动总结
-    "private_auto_summary": false          // 私聊是否自动总结
+    "refresh_token": "YOUR_REFRESH_TOKEN",    // Kimi API令牌,必填
+    "keyword": "k",                          // 触发前缀,如"k 你好"
+    "reset_keyword": "kimi重置会话",          // 重置会话命令
+    "toggle_search_keyword": "kimi切换联网",  // 切换联网开关命令
 }
 ```
 
-## 🎯 使用指南
+### 群组和权限
+```json
+{
+    "group_names": ["测试群"],      // 开启自动链接总结的群组列表
+    "allowed_groups": [],          // 允许使用插件的群组白名单,为空则允许所有群组
+    "auto_summary": true,          // 群聊自动总结开关
+    "private_auto_summary": false  // 私聊自动总结开关
+}
+```
+
+### 群组配置说明
+- `group_names`: 指定哪些群开启链接自动总结功能
+  - 只有在此列表中的群会自动总结分享的链接
+  - 为空数组`[]`则不在任何群启用自动总结
+  - 示例: `["新闻群", "资讯群"]`
+
+- `allowed_groups`: 控制插件的使用权限
+  - 设置哪些群可以使用插件的所有功能
+  - 为空数组`[]`则允许所有群使用
+  - 示例: `["测试群", "AI交流群"]`
+
+- `auto_summary`: 群聊自动总结的总开关
+  - `true`: 允许配置的群开启自动总结
+  - `false`: 关闭所有群的自动总结
+
+- `private_auto_summary`: 私聊自动总结开关
+  - `true`: 开启私聊的链接自动总结
+  - `false`: 关闭私聊的链接自动总结
+
+### 链接处理
+```json
+{
+    "summary_prompt": "你是一个新闻专家...", // 总结提示词模板
+    "exclude_urls": [                      // 不进行总结的URL关键词
+        "support.weixin.qq.com",
+        "finder.video.qq.com"
+    ]
+}
+```
+
+### 文件处理
+```json
+{
+    "file_upload": true,           // 文件上传功能开关
+    "max_file_size": 50,          // 最大文件大小(MB)
+    "file_triggers": [            // 文件处理触发词
+        "k分析", "分析",
+        "k识别", "识别", 
+        "k识图", "识图"
+    ],
+    "file_parsing_prompts": "请帮我整理汇总文件的核心内容",  // 文件解析提示词
+    "image_prompts": "请描述这张图片的内容",               // 图片识别提示词
+    "use_system_prompt": true,    // 是否使用系统推荐提示词
+    "show_custom_prompt": false   // 是否显示自定义提示词
+}
+```
+
+### 支持的文件格式
+```json
+{
+    "supported_file_formats": [
+        // 文档类
+        ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+        ".pdf", ".txt", ".md", ".csv",
+        // 图片类
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+        // 代码类
+        ".py", ".java", ".cpp", ".c", ".h", ".hpp",
+        ".js", ".ts", ".html", ".css",
+        // 配置类
+        ".json", ".xml", ".yaml", ".yml", 
+        ".ini", ".conf", ".properties",
+        // 其他
+        ".sh", ".bat", ".log"
+    ]
+}
+```
+
+### 日志配置
+```json
+{
+    "logging": {
+        "enabled": true,              // 日志开关
+        "level": "INFO",             // 日志级别
+        "format": "[KimiChat] %(message)s",  // 日志格式
+        "show_init_info": true,      // 显示初始化信息
+        "show_file_process": true,   // 显示文件处理日志
+        "show_chat_process": false   // 显示聊天处理日志
+    }
+}
+```
+
+## 使用指南
 
 ### 基础对话
 ```
-k 你好                    # 开始对话
-k 今天广州天气如何?        # 联网搜索天气信息
-kimi重置会话              # 重置对话上下文
-k链接内容翻译中文https://.... #使用自定义提示词总结链接内容
+k 你好                    # 普通对话
+k 查询天气               # 联网搜索
+k 继续                   # 继续上文
+kimi重置会话             # 重置当前会话
+kimi切换联网             # 开关联网功能
 ```
 
-### 文件识别
+### 文件/图片识别
 ```
-识别                      # 识别单个文件/图片内容
-识别 3                    # 识别多个(这里为3个)文件/图片内容
-识别 里面内容翻译中文      # 使用自定义提示词识别文件/图片，并翻译成中文
-```
+k识别                    # 识别单个文件/图片
+k识别 3                  # 批量识别3个文件/图片
+k识别 分析内容           # 使用自定义提示词
 
-### 视频分析
-```
-视频                      # 分析视频内容并总结要点
-视频 这两只猫在干嘛        # 使用自定义提示词分析视频内容
-视频 =9.76 复制打开抖音，看看...  # 提取抖音视频链接并进行自动解析总结
 ```
 
 ### 链接解析
-- 直接分享链接即可触发自动总结功能
-- 需在`group_names`中配置启用自动总结的群组名称
-- 如需在私聊中启用自动总结，请将`private_auto_summary`设为`true`
-
-## 📝 支持的文件格式
-
-- 文档：`.doc`, `.docx`, `.pdf`, `.txt`
-- 图片：`.jpg`, `.png`, `.gif`, `.webp`
-- 视频：`.mp4`, `.avi`, `.mov`, `.mkv`
-- 代码：`.py`, `.java`, `.json`, `.html`
-
-## ⚠️ 使用限制
-
-- 普通文件大小：≤ 50MB
-- 视频文件大小：≤ 100MB
-- 视频帧提取：最多50帧
-- 需正确配置`refresh_token`才能使用Kimi API
-- 音频转写功能需额外配置`audio_token`
-
-## 🔍 常见问题
-
-1. API连接失败
-   - 检查`refresh_token`是否有效，确保没有过期或错误
-   - 确认网络连接正常，可以访问Kimi API服务器
-
-2. 文件识别失败
-   - 检查文件格式是否在支持列表中
-   - 确认文件大小没有超过限制，普通文件≤50MB，视频文件≤100MB
-
-3. 群聊无响应
-   - 检查`group_names`配置，确保目标群名在列表中
-   - 确认机器人已被正常拉入群聊，并具有发言权限
-
-4. 音频转写报错
-   - 检查是否已配置`audio_token`，并确保token有效
-   - 确认音频文件格式和大小是否符合硅基流动的要求
-
-## 🔄 版本历史
-
-v0.2.1
-- 📝 完善README文档，补充更多细节和说明
-- 🐛 修复若干已知bug，提升插件稳定性
-
-v0.2
-- ✨ 新增视频分析功能，支持提取视频关键信息和自动总结
-- 🔧 优化文件处理逻辑，提高大文件解析速度和成功率
-
-v0.1 
-- 🎉 实现基础对话功能，支持多轮上下文交互
-- 🌐 接入联网搜索能力，支持实时查询和数据获取
-- 💬 支持私聊及群聊，可根据场景提供定制化服务
-
-## 🤝 贡献与反馈
-
-如果您在使用过程中发现任何问题，或有任何建议和想法，欢迎通过Issue反馈。
-同时也欢迎提交PR，贡献代码或改进文档，让KimiChat变得更好！
-
-感谢您的支持和贡献！
+- 群聊/私聊中直接分享链接即可自动总结
+- 总结格式:
 ```
+总结
+[一句话核心观点]
+
+💡要点
+1. [关键点1]
+2. [关键点2]
+3. [关键点3]
+```
+
+## 会话管理
+
+### 群聊会话
+- 同群共享上下文
+- 所有成员共享历史
+- 重置影响整个群组
+
+### 私聊会话  
+- 独立会话上下文
+- 互不影响历史
+- 重置只影响个人
+
+## 使用限制
+
+- 文件大小: 单个最大50MB
+- 批量上限: 最多50个文件
+- 支持格式: 见文件格式列表
+- 链接限制: 部分链接可能无法访问
+
+## 常见问题
+
+1. refresh_token获取失败
+   - 确保完全登录Kimi官网
+   - 等待10-15分钟后重试
+   - 检查网络连接状态（目前好像只能抓小程序或者app才有refresh_token）
+
+2. 文件图片上传失败
+   - 检查文件大小是否超限
+   - 确认格式是否支持
+   - 文件/图片内容敏感
+
+3. 群聊响应问题
+   - 检查群组是否在白名单
+   - 确认触发词是否正确
+   - 验证权限是否开启
+
